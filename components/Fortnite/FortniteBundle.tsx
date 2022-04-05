@@ -1,16 +1,8 @@
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
 import React from "react";
+import { StyleSheet, View } from "react-native";
+import CachedImage from "../App/CachedImage";
 import { Text } from "..";
-import { Video } from "expo-av";
 import FortniteCurrency from "./FortniteCurrency";
-import FortniteSkin from "./FortniteSkin";
-import BundleItems from "./BundleItems";
 
 interface BundleProps {
   image: string;
@@ -28,10 +20,8 @@ export default function FortniteBundle({ image, name, cost }: BundleProps) {
       <View style={styles.cost}>
         <FortniteCurrency amount={cost} />
       </View>
-      <Image
-        source={{
-          uri: image,
-        }}
+      <CachedImage
+        uri={image}
         style={{
           width: 412,
           height: 170,

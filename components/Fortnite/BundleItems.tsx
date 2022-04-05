@@ -1,5 +1,5 @@
-import { FlatList, View } from "react-native";
 import React from "react";
+import { FlatList, View } from "react-native";
 import { Text } from "../../themes/Theme";
 import FortniteSkin from "./FortniteSkin";
 

@@ -1,7 +1,7 @@
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import CachedImage from "../App/CachedImage";
 import { Text } from "..";
-import { Video } from "expo-av";
 import FortniteCurrency from "./FortniteCurrency";
 
 interface SkinProps {
@@ -27,10 +27,8 @@ export default function FortniteSkin({ image, name, cost }: SkinProps) {
       <View style={styles.cost}>
         <FortniteCurrency amount={cost} />
       </View>
-      <Image
-        source={{
-          uri: image,
-        }}
+      <CachedImage
+        uri={image}
         style={{
           width: 175,
           height: 175,

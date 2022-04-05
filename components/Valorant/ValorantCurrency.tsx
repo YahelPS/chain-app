@@ -1,5 +1,6 @@
-import { View, Image } from "react-native";
+import { View } from "react-native";
 import React from "react";
+import { Image } from "react-native";
 import { Text } from "..";
 import HView from "../App/HView";
 
@@ -20,10 +21,8 @@ export default function ValorantCurrency({ amount, type }: CurrencyProps) {
       <Image
         source={{
           uri: assets[type],
-          height: 14,
-          width: 14,
         }}
-        style={{ marginTop: 3, marginRight: 3 }}
+        style={{ marginTop: 3, marginRight: 3, height: 14, width: 14 }}
       />
       <Text variant="heading4">{amount}</Text>
     </HView>

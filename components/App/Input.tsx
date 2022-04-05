@@ -1,8 +1,9 @@
 import { View, StyleSheet, TextInput, KeyboardTypeOptions } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { colors } from "../../themes/Theme";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "..";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface InputProps {
   placeholder?: string;
@@ -12,6 +13,7 @@ interface InputProps {
   keyboardType?: KeyboardTypeOptions;
   label?: string;
   value: string;
+  capitalize?: boolean;
 }
 
 export default function Input({
@@ -19,20 +21,26 @@ export default function Input({
   icon = null,
   defaultValue = "",
   keyboardType = "default",
+  capitalize = true,
   label = "",
   value = "",
   onChangeText,
 }: InputProps) {
+  const textInput = useRef(null);
   return (
-    <View style={{ paddingVertical: 5 }}>
+    <TouchableWithoutFeedback
+      style={{ paddingBottom: 5 }}
+      //@ts-ignore
+      onPress={() => textInput.current.focus()}
+    >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text variant="label">{label}</Text>
-        <Feather
+        {/* <Feather
           name="help-circle"
           color={colors["grey.400"]}
           size={12}
           style={{ paddingLeft: 2 }}
-        />
+        /> */}
       </View>
       <View style={styles.inputContainer}>
         {icon}
@@ -43,9 +51,12 @@ export default function Input({
           placeholder={placeholder}
           defaultValue={defaultValue}
           keyboardType={keyboardType}
+          //@ts-ignore
+          autoCapitalize={capitalize ? "sentences" : "none"}
+          ref={textInput}
         />
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -55,7 +66,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 14,
-    marginTop: 5,
     backgroundColor: "#161F27",
     borderRadius: 8,
     borderColor: colors["grey.400"],

@@ -1,6 +1,6 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text } from "..";
 import { colors } from "../../themes/Theme";
 import HView from "./HView";
@@ -13,11 +13,10 @@ interface ButtonComponentProps {
   icon?: any;
 }
 
-export default function ButtonComponent({
+export default function Nav({
   title,
   variant = "primary",
   disabled = false,
-  icon,
   onPress,
 }: ButtonComponentProps) {
   const background = {
@@ -34,17 +33,26 @@ export default function ButtonComponent({
       }}
       disabled={disabled}
     >
-      <Text variant="heading4">
-        {icon && <HView style={{ paddingRight: 5 }}>{icon}</HView>}
-        {title}
-      </Text>
+      <HView
+        style={{
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text variant="heading4">{title}</Text>
+        <Text variant="heading2">
+          <Feather name="chevron-right" size={18} />
+        </Text>
+      </HView>
     </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({
   button: {
     justifyContent: "center",
-    alignItems: "center",
+    paddingHorizontal: 20,
+    marginVertical: 10,
     color: "red",
     height: 50,
     width: 200,

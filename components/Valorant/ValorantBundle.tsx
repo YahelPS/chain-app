@@ -1,12 +1,12 @@
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import CachedImage from "../App/CachedImage";
+import React, { useEffect, useState } from "react";
 import { Text } from "..";
 import { Video } from "expo-av";
-
 interface BundleProps {
   image: string;
   name: string;
-  time: string;
+  time: number;
   video: string;
 }
 
@@ -16,35 +16,37 @@ export default function ValorantBundle({
   time,
   video,
 }: BundleProps) {
-  const player = React.useRef<any>(null);
+  const [timer, setTimer] = useState(time);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(timer - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  });
+  function secsToTime(secs: number) {
+    let d = (secs / 8.64e4) | 0;
+    let H = ((secs % 8.64e4) / 3.6e3) | 0;
+    let m = ((secs % 3.6e3) / 60) | 0;
+    let s = secs % 60;
+    let z = (n: number) => (n < 10 ? "0" : "") + n;
+    let str = `${z(H)}:${z(m)}:${z(s)}`;
+    if (d < 1) return str;
+    str = `${d}:${str}`;
+    return str;
+  }
+
   return (
-    <TouchableOpacity
-      onPress={() => {
-        player.current.presentFullscreenPlayer();
-        player.current.playAsync();
-      }}
-      style={{ position: "relative" }}
-    >
-      <Video
-        ref={player}
-        source={{
-          uri: video,
-        }}
-        useNativeControls
-        style={{ width: 320, height: 180, display: "none" }}
-      />
+    <TouchableOpacity style={{ position: "relative", paddingHorizontal: 10 }}>
       <View style={styles.texts}>
-        <Text variant="valorantTime">{time}</Text>
+        <Text variant="valorantTime">{secsToTime(timer)}</Text>
         <Text variant="valorantTitle">{name}</Text>
       </View>
-      <Image
-        source={{
-          uri: image,
-        }}
+      <CachedImage
+        uri={image}
         style={{
-          width: 412,
-          height: 170,
-          transform: [{ scale: 0.9 }],
+          width: 365,
+          height: 130,
+          // transform: [{ scale: 0.9 }],
           borderRadius: 8,
         }}
       />

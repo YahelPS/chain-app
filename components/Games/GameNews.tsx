@@ -26,7 +26,7 @@ export default function GameNews({
             description={item.description}
             url={item.url}
             date={item.date}
-            titleLines={titleLines}
+            titleLines={game === "Fortnite" ? 5 : 2}
           />
         )}
         //@ts-ignore
