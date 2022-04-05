@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, View } from "react-native";
+import AppHeader from "../components/App/AppHeader";
 import Game from "../components/Games/Game";
 
 export default function GamesScreen({ navigation }: { navigation: any }) {

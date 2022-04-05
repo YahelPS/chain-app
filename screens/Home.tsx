@@ -1,59 +1,70 @@
-import { Video } from "expo-av";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { Headers } from "../apis/Valorant";
+import { ActivityIndicator, ScrollView } from "react-native";
+import { Text } from "../components";
+import AppHeader from "../components/App/AppHeader";
 import GameNews from "../components/Games/GameNews";
 
 async function formatFetch(url: string, formatSettings: any = (e: any) => e) {
-  const resp = await fetch(url).then((res) => res.json());
-  return formatSettings(resp);
+  let defData = null;
+  const resp = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+    },
+  }).then((res) => res.json());
+  return defData ? defData : formatSettings(resp);
 }
 
 export default function HomeScreen() {
-  const [valorantData, setValorantData] = useState(null);
-  const [fortniteData, setFortniteData] = useState(null);
+  const games = {
+    Fortnite: false,
+    Minecraft: true,
+    Valorant: true,
+    "League of Legends": false,
+    "Apex Legends": true,
+  };
+
+  const [news, setNews] = useState<{ game: string; news: [] }[]>([]);
+  const [hasError, setHasError] = useState<boolean>(false);
   // @ts-ignore
   useEffect(async () => {
-    const valorantNews = await formatFetch(
-      "https://playvalorant.com/page-data/en-us/news/page-data.json",
-      (e: any) =>
-        e.result.data.contentstackNews.featured_news.reference.map(
-          //@ts-ignore
-          (newsItem) =>
-            Object({
-              ...newsItem,
-              image: newsItem.banner.url,
-              url:
-                newsItem.external_link ||
-                `https://playvalorant.com/en-us/${newsItem.url.url}`,
-            })
-        )
-    );
-    setValorantData(valorantNews);
-    const fortniteNews = await formatFetch(
-      "https://www.epicgames.com/fortnite/api/blog/getPosts?category=&postsPerPage=5&offset=0&locale=en-US&rootPageSlug=blog",
-      (e: any) =>
-        e.blogList.map((newsItem: any) =>
-          Object({
-            title: newsItem.gridTitle || newsItem.title,
-            image: newsItem.image,
-            description: "",
-            url: `https://www.epicgames.com/fortnite/en-US${newsItem.urlPattern}`,
-            date: newsItem.date,
-          })
-        )
-    );
+    try {
+      const fetchedNews = await axios.get(
+        "https://valorant-api.vladzich.repl.co/news"
+      );
 
-    setFortniteData(fortniteNews);
+      setNews(fetchedNews.data);
+    } catch {
+      setHasError(true);
+    }
   }, []);
 
-  return (
-    <View style={{ padding: 20 }}>
-      {valorantData ? <GameNews game="Valorant" data={valorantData} /> : null}
+  if (hasError)
+    return (
+      <Text
+        variant="heading4"
+        style={{ alignSelf: "center", textAlign: "center", paddingTop: 10 }}
+      >
+        An error occurred while fetching news.
+        <Text variant="body">{`\nPlease try again later.`}</Text>
+      </Text>
+    );
 
-      {fortniteData ? (
-        <GameNews game="Fortnite" data={fortniteData} titleLines={2} />
-      ) : null}
-    </View>
-  );
+  if (news.length > 0)
+    return (
+      <ScrollView style={{ padding: 20 }}>
+        {news
+          //@ts-ignore
+          .sort((a, b) => Number(games[b.game]) - Number(games[a.game]))
+          .map((gameNews: any) => (
+            <GameNews
+              game={gameNews.game}
+              data={gameNews.data}
+              key={gameNews.game}
+            />
+          ))}
+      </ScrollView>
+    );
+  return <ActivityIndicator color="white" />;
 }
